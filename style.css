@@ -1,0 +1,57 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container-lessons{
+    display: flex;
+    justify-content: center;
+}
+
+.description-lesson{
+    width: 250px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    margin-top: 50px;
+    border: 0.5px solid gray;
+}
+
+.sign-up{
+    display: block;
+    background-color: white;
+    color:gray;
+    border: gray;
+    width: 100px;
+    height: 30px;
+    border-radius: 20px;
+    border: 1px solid gray;
+    margin-top: 10px;
+}
+
+.sign-up:hover{
+    background-color: rgb(255, 234, 49);
+    color:black;
+    border: none;
+    transition: 1s;
+
+} 
+
+.cancel{
+    /* display: none; */
+    background-color: white;
+    color:gray;
+    border: gray;
+    width: 150px;
+    height: 30px;
+    border-radius: 20px;
+    border: 1px solid gray;
+    margin-top: 10px;
+}
+
+.cancel:hover{
+    background-color: rgb(119, 0, 0);
+    color:white;
+    border: none;
+    transition: 1s;
+} 
