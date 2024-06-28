@@ -28,7 +28,7 @@ const dataJson = `[
     "name": "Йога",
     "time": "10:00 - 11:00",
     "maxParticipants": 15,
-    "currentParticipants": 8
+    "currentParticipants": 15
   },
   {
     "id": 2,
@@ -64,21 +64,21 @@ const key = "user";
 
 const divElForLessons = document.querySelector(".container-lessons");
 
-const lessons = JSON.parse(dataJson);
+const lessons = JSON.parse(localStorage.getItem(key));
 console.log(lessons);
 
 lessons.forEach((element) => {
   divElForLessons.insertAdjacentHTML(
     `beforeend`,
     `
-  <div class="description-lesson">
+  <div class="description-lesson" data-id= "${element.id}">
   <p class="name"> Название: ${element.name}</p>
   <p class="time"> Время: ${element.time}</p>
   <p class="max-people">Макс.чел: ${element.maxParticipants}</p>
   <p class="
   recorded-people">Записано: ${element.currentParticipants}</p>
   <button class="
-  sign-up">Записаться</button>
+  sing-up">Записаться</button>
   <button class="
   cancel">Отменить запись</button>
   </div>
@@ -94,16 +94,68 @@ buttonCancel.forEach((element) => {
 divElForLessons.addEventListener("click", (e) => {
   if (!e.target.classList.contains("sing-up")) {
     return;
-  } 
+  }
 
-    const container = e.target.closest(".description-lesson");
-    const cancelButton = container.querySelector(".cancel");
+  const container = e.target.closest(".description-lesson");
+
+  // Находим кнопку "Отменить запись" и показываем её
+  const cancelButton = container.querySelector(".cancel");
+
+  // Получаем id урока из атрибута data-id контейнера
+  const lessonId = lessons.find(
+    (item) => item.id === +container.getAttribute("data-id")
+  );
+
+  if (lessonId.currentParticipants < lessonId.maxParticipants) {
+    // Обновляем количество участников урока
+    lessonId.currentParticipants++;
+
+    // Обновляем отображение количества записанных людей
+    const recordedPeople = container.querySelector(".recorded-people");
+    recordedPeople.innerHTML = `Записано: ${lessonId.currentParticipants}`;
+
+    // Отображаем кнопку "Отменить запись"
     cancelButton.style.display = "inline-block";
-  
+
+    // Скрываем кнопку "Записаться"
+    e.target.style.display = "none";
+  } else {
+    const pEL = document.createElement("p");
+    pEL.innerHTML = "Запись недоступна";
+    pEL.classList.add("unavailable");
+    container.appendChild(pEL);
+    e.target.style.display = "none";
+    setTimeout(() => {
+      e.target.style.display = "block";
+      pEL.style.display = "none";
+    }, 3000);
+  }
+
+  localStorage.setItem(key, JSON.stringify(lessons));
 });
 
-//const lesson = lessons.find(item => item.id === id)
-// const buttonSing = document.querySelectorAll(".sing-up");
-// buttonSing.addEventListener("click", (e) => {
-//   e.target.style.display = "none";
-// });
+divElForLessons.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("cancel")) {
+    return;
+  }
+  const container = e.target.closest(".description-lesson");
+  const signUpButton = container.querySelector(".sign-up");
+
+  const lessonId = lessons.find(
+    (item) => item.id === +container.getAttribute("data-id")
+  );
+
+  // Уменьшаем количество участников и обновляем отображение
+  if (lessonId.currentParticipants > 0) {
+    lessonId.currentParticipants--;
+  localStorage.setItem(key, JSON.stringify(lessons));
+
+  }
+  const recordedPeople = container.querySelector(".recorded-people");
+  recordedPeople.innerHTML = `Записано: ${lessonId.currentParticipants}`;
+  const singButton = container.querySelector(".sing-up");
+
+  singButton.style.display = "inline-block";
+  e.target.style.display = "none";
+  
+});
